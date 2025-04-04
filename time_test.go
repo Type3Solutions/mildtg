@@ -18,13 +18,13 @@ func TestTime_Format(t *testing.T) {
 		{
 			name:     "full year",
 			input:    NewTime(time.Date(2021, 1, 1, 1, 0, 0, 0, ZULU.Location())),
-			layout:   MILDTGFULLYEAR,
+			layout:   FullYearFormat,
 			expected: "010100Z JAN 2021",
 		},
 		{
 			name:     "short year",
 			input:    NewTime(time.Date(2021, 1, 1, 1, 0, 0, 0, ZULU.Location())),
-			layout:   MILDTGSHORTYEAR,
+			layout:   ShortYearFormat,
 			expected: "010100Z JAN 21",
 		},
 		{
@@ -61,6 +61,16 @@ func TestTime_String(t *testing.T) {
 			name:  "valid time with non-zulu timezone",
 			input: NewTime(time.Date(2021, 1, 1, 1, 0, 0, 0, ROMEO.Location())),
 			want:  "010100R JAN 21",
+		},
+		{
+			name:  "valid time with two-digit year before 2000",
+			input: NewTime(time.Date(1999, 1, 1, 1, 0, 0, 0, ZULU.Location())),
+			want:  "010100Z JAN 99",
+		},
+		{
+			name:  "valid time with two-digit year after 2000",
+			input: NewTime(time.Date(2001, 1, 1, 1, 0, 0, 0, ZULU.Location())),
+			want:  "010100Z JAN 01",
 		},
 		{
 			name:  "invalid time",
