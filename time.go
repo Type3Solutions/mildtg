@@ -9,17 +9,15 @@ import (
 )
 
 const (
-	minYear    = 1941 // The U.S. entered World War II in 1941.
-	maxYear    = 9999 // The maximum year allowed.
 	invalidDTG = "INVALID DTG"
 )
 
 const (
-	// MILDTGFULLYEAR is the layout for a full year date-time-group.
-	MILDTGFULLYEAR = "020106Z JAN 2006"
+	// FullYearFormat is the layout for a full year date-time-group.
+	FullYearFormat = "020106Z JAN 2006"
 
-	// MILDTGSHORTYEAR is the layout for a short year date-time-group.
-	MILDTGSHORTYEAR = "020106Z JAN 06"
+	// ShortYearFormat is the layout for a short year date-time-group.
+	ShortYearFormat = "020106Z JAN 06"
 )
 
 var (
@@ -40,9 +38,9 @@ type Time struct {
 // Format returns the date-time-group in the format
 func (t Time) Format(layout string) string {
 	switch layout {
-	case MILDTGFULLYEAR:
+	case FullYearFormat:
 		return t.toString(true)
-	case MILDTGSHORTYEAR:
+	case ShortYearFormat:
 		return t.toString(false)
 	default:
 		return t.Time.Format(layout)
@@ -111,6 +109,10 @@ func (t Time) toString(longYear bool) string {
 	if longYear {
 		b.WriteString(fmt.Sprintf("%d", year))
 	} else {
+		twoDigitYear := year % 100
+		if twoDigitYear < 10 {
+			b.WriteString("0")
+		}
 		b.WriteString(fmt.Sprintf("%d", year%100))
 	}
 
@@ -363,9 +365,4 @@ func parseDTGBytes(s string) (Time, error) {
 	t := time.Date(year, month, day, hour, minute, seconds, 0, tz.Location())
 
 	return NewTime(t), nil
-}
-
-// removeSpaces removes all spaces from a string.
-func removeSpaces(s string) string {
-	return strings.ReplaceAll(s, " ", "")
 }
